@@ -8,10 +8,11 @@ An attempt to make downloading sequence data easier and faster
 
 ## Introduction
 
-* [`ncbi-genome-download`]()
-* [`ncbi-acc-download`]()
-* [Entrez-utils/`edirect`]()
+* [ncbi-genome-download`]()
+* [ncbi-acc-download`]()
+* [Entrez-utils (edirect)]()
 * [sratoolkit]()
+* [enasearch](http://bebatut.fr/enasearch/)
 
 ## Accession IDs supported
 
