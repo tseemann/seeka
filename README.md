@@ -4,7 +4,7 @@
 
 # seeka
 
-An attempt to make downloading sequence data easier and faster
+Get microbial sequence data easier and faster
 
 ## Introduction
 

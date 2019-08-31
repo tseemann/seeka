@@ -13,7 +13,7 @@ sub main {
   {
     name => 'seeka',
     version => '0.0.1',
-    desc => 'Get sequence data easier and faster',
+    desc => 'Get microbial sequence data easier and faster',
     author => 'Torsten Seemann',
     url => 'https://github.com/tseemann/seeka',
   },
