@@ -9,12 +9,12 @@ addons:
     apt:
         packages:
             - gzip
+            - curl
 
 install:
     - "export PATH=$PWD/bin:$PATH"
 #    - "cpanm --quiet --notest File::Which"
 
 script:
-    - "perl-biotool --version"
-    - "perl-biotool --help"
-    - "perl-biotool --check"
+    - "seeka --version"
+    - "seeka --help"

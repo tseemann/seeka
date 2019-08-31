@@ -1,0 +1,33 @@
+#!/usr/bin/env perl
+use 5.26.0;
+use strict;
+use FindBin;
+use lib "$FindBin::RealBin/../perl5";
+use Biotool::Getopt;
+use Biotool::Logger;
+use Biotool::Binaries;
+use Data::Dumper;
+
+sub main {
+  my $opt = Biotool::Getopt->getopt( 
+  {
+    name => 'seeka',
+    version => '0.0.1',
+    desc => 'Get sequence data easier and faster',
+    author => 'Torsten Seemann',
+    url => 'https://github.com/tseemann/seeka',
+  },
+  {
+    outdir => { type=>'dir', need=>1, default=>'.', desc=>"Save data here" },
+    dryrun => { type=>'bool', desc=>"Dry run, don't download anything" },   
+    check  => { type=>'bool', desc=>"Check dependencies and exit" },
+  });
+
+  print Dumper($opt);
+
+  require_exe($_) for qw(ascp esearch efetch elink);
+  return if $opt->{check};
+}
+
+exit main(@ARGV);
+
