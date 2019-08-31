@@ -1,0 +1,20 @@
+language: perl
+
+sudo: false
+
+perl:
+    - "5.26"
+    
+addons:
+    apt:
+        packages:
+            - gzip
+
+install:
+    - "export PATH=$PWD/bin:$PATH"
+#    - "cpanm --quiet --notest File::Which"
+
+script:
+    - "perl-biotool --version"
+    - "perl-biotool --help"
+    - "perl-biotool --check"
