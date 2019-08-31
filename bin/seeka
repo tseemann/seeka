@@ -25,7 +25,7 @@ sub main {
 
   print Dumper($opt);
 
-  require_exe($_) for qw(ascp esearch efetch elink);
+  require_exe($_) for qw(ascp rsync curl esearch efetch elink);
   return if $opt->{check};
 }
 

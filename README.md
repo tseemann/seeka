@@ -61,6 +61,7 @@ $HOME/seeka/bin/seeka --help
 
 * `perl` >= 5.26
 * `ascp` from the Aspera Command Line Tools
+* `rsync`
 * `esearch`, `efetch`, `elink` from the Entrez `edirect` toolkit
 
 ## License
