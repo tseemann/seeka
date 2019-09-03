@@ -6,15 +6,61 @@
 
 Get microbial sequence data easier and faster
 
-## Introduction
+## Motivation
 
-* [ncbi-genome-download`]()
-* [ncbi-acc-download`]()
-* [Entrez-utils (edirect)]()
-* [sratoolkit]()
+Traditionally if you saw an accession number in a manuscript,
+you would paste it into [NCBI Search](https://www.ncbi.nlm.nih.gov/) 
+and then muck around trying to download the associated data.
+There were wizards who could use the Entrez interface and its
+associated command line tools, but it needs to be easier.
+
+A variety of tools now exist to download data from NCBI and ENA:
+
+* [Entrez Direct](https://www.ncbi.nlm.nih.gov/books/NBK179288/)
+* [sratoolkit](https://github.com/ncbi/sra-tools)
+* [ncbi-genome-download](https://github.com/kblin/ncbi-genome-download)
+* [ncbi-acc-download`](https://github.com/kblin/ncbi-acc-download)
 * [enasearch](http://bebatut.fr/enasearch/)
 
-## Accession IDs supported
+Combined they are powerful. Some work with assemblies, some with both,
+some with both, but often with confusing caveats and annoying 
+parameters I don't feel I should have to think about.
+
+I just want to do this:
+```
+% seeka PRJEB5167
+
+% cd PRJEB5167
+
+% ls
+ERR405852 ERR405853 ERR405854 ERR405855 ERR405856 ERR405857 ERR405858
+ERR405859 ERR405860 ERR405861 ERR405862 ERR405863 ERR405864 ERR405865
+ERR405866 ERR405867 ERR405868 ERR405869
+
+% cd ERR405855
+
+% ls
+ERR405855_1.fastq.gz ERR405855_2.fastq.gz
+```
+
+
+## Quick Start
+
+```
+% seeka --version
+seeka 0.4.2
+
+# download a single run
+% seeka ERR405852
+
+# get data for a biosample
+% seeka SAMEA2297485
+
+# get every read set in a project
+# seeka PRJEB5167
+```
+
+## Accession IDs to be supported
 
 * `GCA_nnnnnnnnn.v` - Genbank assembly
 * `[A-Z]{4}01000000` - Genbank assembly
@@ -27,12 +73,12 @@ Get microbial sequence data easier and faster
 * `[SED]RSnnnnnnn` - SRA sample
 * `SAM[NED]` - Biosamples
 
-## Quick Start
+## Output files
 
-```
-% seeka --version
-seeka 0.1.2
-```
+* `seeka.ACCESSION.tsv` - metadata TSV for search query
+* `*.fastq.gz` - any read data
+* `*.fna.gz` - any assemblies in FASTA 
+* `*.gbff.gz` - any Genbank files in FASTA
 
 ## Installation
 
