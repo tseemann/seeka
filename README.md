@@ -19,10 +19,11 @@ A variety of tools now exist to download data from NCBI and ENA:
 * [Entrez Direct](https://www.ncbi.nlm.nih.gov/books/NBK179288/)
 * [sratoolkit](https://github.com/ncbi/sra-tools)
 * [ncbi-genome-download](https://github.com/kblin/ncbi-genome-download)
-* [ncbi-acc-download`](https://github.com/kblin/ncbi-acc-download)
+* [ncbi-acc-download](https://github.com/kblin/ncbi-acc-download)
 * [enasearch](http://bebatut.fr/enasearch/)
 
-Combined they are powerful. Some work with assemblies, some with both,
+Combined they are powerful. I use them. 
+Some work with assemblies, some with both,
 some with both, but often with confusing caveats and annoying 
 parameters I don't feel I should have to think about.
 
@@ -31,16 +32,28 @@ I just want to do this:
 % seeka PRJEB5167
 
 % cd PRJEB5167
-
 % ls
 ERR405852 ERR405853 ERR405854 ERR405855 ERR405856 ERR405857 ERR405858
 ERR405859 ERR405860 ERR405861 ERR405862 ERR405863 ERR405864 ERR405865
-ERR405866 ERR405867 ERR405868 ERR405869
+ERR405866 ERR405867 ERR405868 ERR405869 ERR405870 ERR405871 ERR405872
+PRJEB5167.tsv
+
+% head -n 1 PRJEB5167.tsv | tr "\t" "\n" | head | nl
+     1	study_accession
+     2	secondary_study_accession
+     3	sample_accession
+     4	secondary_sample_accession
+     5	experiment_accession
+     6	run_accession
+     7	submission_accession
+     8	tax_id
+     9	scientific_name
+    10	instrument_platform
 
 % cd ERR405855
-
 % ls
 ERR405855_1.fastq.gz ERR405855_2.fastq.gz
+
 ```
 
 
