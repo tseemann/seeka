@@ -7,27 +7,36 @@ use Biotool::Getopt;
 use Biotool::Logger;
 use Biotool::Binaries;
 use Data::Dumper;
+use Seeka::SRA;
 
 sub main {
   my $opt = Biotool::Getopt->getopt( 
   {
     name => 'seeka',
-    version => '0.0.1',
+    version => '0.0.2',
     desc => 'Get microbial sequence data easier and faster',
     author => 'Torsten Seemann',
     url => 'https://github.com/tseemann/seeka',
   },
   {
     outdir => { type=>'dir', need=>1, default=>'.', desc=>"Save data here" },
+    outfmt => { type=>'string', need=>1, default=>'%P/%S', desc=>"%P=project %S=biosample %R=run" },
     dryrun => { type=>'bool', desc=>"Dry run, don't download anything" },   
     check  => { type=>'bool', desc=>"Check dependencies and exit" },
+#    cache  => { type=>'dir', need=>1, desc=>"Cache directory for indices",
+#                default=>($ENV{SEEKA_CACHE} || $ENV{HOME}."/.seeka") },
   });
 
-  print Dumper($opt);
-
+  # print Dumper($opt);
   require_exe($_) for qw(ascp rsync curl esearch efetch elink);
   return if $opt->{check};
+
+  for my $acc ($$opt{ARGV}->@*) {
+    msg("Processing: $acc");
+    handle_accession($acc);
+  }
 }
 
 exit main(@ARGV);
+
 
