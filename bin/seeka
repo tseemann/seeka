@@ -13,18 +13,30 @@ sub main {
   my $opt = Biotool::Getopt->getopt( 
   {
     name => 'seeka',
-    version => '0.0.2',
+    version => '0.0.3',
     desc => 'Get microbial sequence data easier and faster',
     author => 'Torsten Seemann',
     url => 'https://github.com/tseemann/seeka',
   },
   {
     outdir => { type=>'dir', need=>1, default=>'.', desc=>"Save data here" },
-    outfmt => { type=>'string', need=>1, default=>'%P/%S', desc=>"%P=project %S=biosample %R=run" },
-    dryrun => { type=>'bool', desc=>"Dry run, don't download anything" },   
+#    outfmt => { type=>'string', need=>1, default=>'%P/%S', desc=>"%P=project %S=biosample %R=run" },
+    'dry-run' => { type=>'bool', desc=>"Dry run, don't download anything" },   
     check  => { type=>'bool', desc=>"Check dependencies and exit" },
-#    cache  => { type=>'dir', need=>1, desc=>"Cache directory for indices",
-#                default=>($ENV{SEEKA_CACHE} || $ENV{HOME}."/.seeka") },
+    cache  => { type=>'dir', need=>1, desc=>"Cache directory for indices",
+                default=>($ENV{SEEKA_CACHE} || $ENV{HOME}."/.seeka") },
+    # BOTH
+    kingdom  => { type=>'string', desc=>"Kingdom: bacteria archaea fungi protozoa" },
+    organism => { type=>'string', desc=>"Pattern to filter 'Genus species strain' on" },
+    # FASTA
+    division => { type=>'string', desc=>"Division: genbank refseq" },
+    quality  => { type=>'string', desc=>"Assembly status: closed draft" },
+    format   => { type=>'string', default=>"gbff", desc=>"File format: gbff gff fna ffn" },
+    # FASTQ
+    platform => { type=>'string', default=>'ILLUMINA', desc=>"Sequencing platform: ILLUMINA PACBIO 454 TORRENT" },
+    library  => { type=>'string', default=>'WGS', desc=>"Library: WGS AMPLICON ..." },
+    source   => { type=>'string', default=>'GENOMIC', desc=>"Library: GENOMIC RNA ..." },
+    layout   => { type=>'bool', default=>'PAIRED', desc=>"Read strategy: PAIRED SINGLE" },
   });
 
   # print Dumper($opt);
