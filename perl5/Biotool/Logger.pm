@@ -14,7 +14,8 @@ sub wrn { msg("WARNING:", @_); }
 sub main {
   msg("This is a message");
   wrn("This is a warning");
-  err("This is an error");
+  # err("This is an error");
+  return 0;
 }
 
 if (basename($0) eq 'Logger.pm') {

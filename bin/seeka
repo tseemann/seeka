@@ -23,6 +23,7 @@ sub main {
 #    outfmt => { type=>'string', need=>1, default=>'%P/%S', desc=>"%P=project %S=biosample %R=run" },
     'dry-run' => { type=>'bool', desc=>"Dry run, don't download anything" },   
     check  => { type=>'bool', desc=>"Check dependencies and exit" },
+    sync   => { type=>'bool', desc=>"Set up --cache dir" },
     cache  => { type=>'dir', need=>1, desc=>"Cache directory for indices",
                 default=>($ENV{SEEKA_CACHE} || $ENV{HOME}."/.seeka") },
     # BOTH
@@ -36,7 +37,7 @@ sub main {
     platform => { type=>'string', default=>'ILLUMINA', desc=>"Sequencing platform: ILLUMINA PACBIO 454 TORRENT" },
     library  => { type=>'string', default=>'WGS', desc=>"Library: WGS AMPLICON ..." },
     source   => { type=>'string', default=>'GENOMIC', desc=>"Library: GENOMIC RNA ..." },
-    layout   => { type=>'bool', default=>'PAIRED', desc=>"Read strategy: PAIRED SINGLE" },
+    layout   => { type=>'string', default=>'PAIRED', desc=>"Read strategy: PAIRED SINGLE" },
   });
 
   # print Dumper($opt);

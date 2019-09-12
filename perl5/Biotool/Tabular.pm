@@ -50,6 +50,7 @@ sub main {
   __PACKAGE__->matrix_to_tsv($fh->filename, [ [1,2,3], [4,5,6], [7,8,9] ]);
   my $matrix = __PACKAGE__->tsv_to_matrix($fh->filename);
   print Dumper($matrix);
+  return 0;
 }
 
 if (basename($0) eq 'Tabular.pm') {

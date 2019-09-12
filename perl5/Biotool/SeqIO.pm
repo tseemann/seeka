@@ -5,20 +5,32 @@ use strict;
 use Data::Dumper;
 use lib '..';
 use Biotool::Logger;
+use File::Basename;
+use File::Temp;
 
 sub uri_escape { $_[0]; }
 sub uri_unescape { $_[0]; }
 
 #...................................................
 
-sub load_sequence {
+sub read_sequence {
   my($fname, $opt) = @_;
   # FIXME: could use IO::Handle->ungetc() here?
-  $_ = $fname;
-  return load_gff3($fname, $opt) if m/\.gff/i;
-  return load_genbank($fname, $opt) if m/\.(gbk|gb|gbff)/i;
-  return load_fastq($fname, $opt) if m"\.f(ast)?q"i;
-  return load_fasta($fname, $opt);
+  $_ = basename($fname);
+  return read_gff3($fname, $opt) if m/\.gff$/i;
+  return read_genbank($fname, $opt) if m/\.(gbk|gb|gbff)$/i;
+  #return read_fastq($fname, $opt) if m"\.f(ast)?q$"i;
+  return read_fasta($fname, $opt);
+}
+
+#...................................................
+
+sub write_sequence {
+  my($fname, $data, $opt) = @_;
+  $_ = basename($fname);
+  return write_gff3($fname, $data, $opt) if m/\.gff$/i;
+  return write_genbank($fname, $data, $opt) if m/\.(gbk|gb|gbff)$/i;
+  return write_fasta($fname, $data, $opt);
 }
 
 #...................................................
@@ -187,8 +199,11 @@ sub read_genbank {
       $dna =~ s/\s//g;
       $s{SEQ} .= $dna;
     }
-    # CDS complement(400.600)
+    # CDS  complement(400.600)
+    # CDS  100..900
+    # rRNA order(1..10,900..100)
     elsif (m/^\s{5}(\S+)\s+(\w+\()?(\d+)\.\.(\d+)/) {
+      #print STDERR "FEATURE: [ $1 | $2 | $3 | $4 ]\n";
       # save prev one if these was one
       push @{$s{ANNO}}, { %f } if $f{ftype};
       # start new one
@@ -197,8 +212,10 @@ sub read_genbank {
         ftype => $1,
         begin => $3, 
         end => $4,
-        strand => $2 =~ m/^compl/ ? '-' : '+',
       );
+      # we do this after so we don't clobber $1 $3 $4
+      $f{strand} = ($2 =~ m/^compl/ ? '-' : '+');
+      #print STDERR Dumper(\%f);
     }
     # /tag=value
     elsif (m'^\s{21}/(\w+)=\"?([^"]+)"?') {
@@ -279,8 +296,9 @@ sub write_genbank {
 
 #..................................................
 
-sub load_bed {
+sub read_bed {
   my($fname, $opt) = @_;
+  err( (caller(0))[3], " is not implemented yet");
   my @seq;
   open my $BED, '<', $fname;
   while (<$BED>) {
@@ -292,30 +310,34 @@ sub load_bed {
 }
 
 #..................................................
-# take to hashes eg. from load_fasta and load_bed
+# take to hashes eg. from read_fasta and read_bed
 # and merge them and check for seq-ID consistency
 
 sub merge_seq_hashes {
   my($s, @os) = @_;
+  err( (caller(0))[3], " is not implemented yet");
   return $s; 
 }
 
 #..................................................
 
 sub main {
-#  my $s = read_fasta('small.fna', {lower=>1,ambig=>1});
-  #print Dumper($s);
-#  write_fasta('copy.fna', $s);    
-#  write_gff3('copy.gff', $s);    
-#  write_genbank('copy.gbk', $s);    
-#  my $g = read_gff3('small.gff', {noseq=>1});
-  #print Dumper($g);
-#  write_genbank('gff.gbk', $g);
-#  write_fasta('gff.fa', $g);
-#  write_gff3('gff.gff', $g);
-#  my $n = read_genbank('small.gbk');
-#  print Dumper($n);
-#  write_genbank('out.gbk', $n);
+  my $odir = File::Temp->newdir();
+ # my $odir = 't';
+  my $idir = "../../test";;
+  my @ext = qw(fna faa gbk gff);
+  for my $ext (@ext) {
+    my $in = "$idir/small.$ext";
+    msg("Loading: $in");
+    my $seq = read_sequence($in);
+    msg("$in file has", scalar(@$seq), "seqs");
+    for my $tox (@ext) {
+      my $out = "$odir/$ext.$tox";
+      msg("Saving: $out");
+      write_sequence($out, $seq);
+      system("head -n2 $out | cut -c 1-50 | nl | sed 's/^/    /'");
+    }
+  }
   return 0;
 };
 
