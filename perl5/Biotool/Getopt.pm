@@ -5,7 +5,7 @@ use strict;
 use File::Basename;
 use Text::Abbrev;
 use Data::Dumper;
-use List::Util qw(max);
+use List::Util qw(max uniq);
 use lib '..';
 use Biotool::Logger;
 
@@ -19,24 +19,30 @@ sub show_help {
   printf "SYNOPSIS\n  %s\n", $d->{desc};
   my $argv = $pp->{argv} ? ' '.$pp->{argv} : '';;
   printf "USAGE\n  %s [options]$argv\n", $d->{name};
-  printf "OPTIONS\n";
+#  printf "OPTIONS\n";
   $$p{help} = { type=>'', desc=>'Show this help' };
   $$p{version} = { type=>'', desc=>'Print version and exit' };
   my @opt = sort keys %$p;
   my $width = max( map { length } @opt );
-  for my $opt (@opt) {
-    my $t = $$p{$opt}{type};
-    my $musthave = !defined($$p{$opt}{default}) && $$p{$opt}{need};
-    my $choices = $t eq 'choice' && $p->{$opt}{choices} 
-                ? ' {'.join(' ',$p->{$opt}{choices}->@*).'}'
-                : '';
-    printf "  --%-${width}s  %-7s  %s%s%s%s\n",
-      $opt,
-      $NOPARM{$t} ? '' : $t,
-      $$p{$opt}{desc} || ucfirst($t),
-      $choices,
-      ($$p{$opt}{default} ? " [".$$p{$opt}{default}."]" : ''),
-      ($musthave ? ' (MANDATORY)' : '');
+  my @group = sort(uniq(map { $p->{$_}{group} } @opt));
+  #msg("You have", 0+@group, "option groups:", map { "'$_'" } @group);
+  for my $grp (@group) {
+    printf "%s\n", ($grp || 'OPTIONS');
+    for my $opt (@opt) {
+      next unless $$p{$opt}{group} eq $grp;
+      my $t = $$p{$opt}{type};
+      my $musthave = !defined($$p{$opt}{default}) && $$p{$opt}{need};
+      my $choices = $t eq 'choice' && $p->{$opt}{choices} 
+                  ? ' {'.join(' ',$p->{$opt}{choices}->@*).'}'
+                  : '';
+      printf "  --%-${width}s  %-7s  %s%s%s%s\n",
+        $opt,
+        $NOPARM{$t} ? '' : $t,
+        $$p{$opt}{desc} || ucfirst($t),
+        $choices,
+        ($$p{$opt}{default} ? " [".$$p{$opt}{default}."]" : ''),
+        ($musthave ? ' (MANDATORY)' : '');
+    }
   }
   printf "AUTHOR\n  %s\n", $d->{author} if $d->{author};
   printf "HOMEPAGE\n  %s\n", $d->{url} if $d->{url};
@@ -49,7 +55,7 @@ sub show_version {
   exit(0);
 }
 
-sub validate {
+sub validaxte {
   my($self, $p, $switch, $value) = @_;
   my $valid = {
     'int'     => sub { @_[0] =~ m/^[-+]?\d+$/; },
@@ -115,6 +121,8 @@ sub getopt {
     #say Dumper($p->{$switch});
     validate($self, $p, $switch, $opt->{$switch})
       if defined $opt->{$switch};
+    #$p->{$switch}{group} //= 'OPTIONS';
+    msg("$switch group = ", $p->{$switch}{group});
   }
 
   # check we have the correct amount of positional parameters
@@ -136,22 +144,24 @@ sub main {
   my $opt = __PACKAGE__->getopt(
     {
       name => 'biotool',
-      version => '0.0.1',
+      version => '3.2.1',
       desc => 'Helps do bio stuff easier and quicker',
+      author => 'David Bowie',
+      url => 'https://example.com/',
     },
     {
       pickone => { type=>'choice', need=>1, choices=>[qw(A BB CCC)] },
       pickmaybe => { type=>'choice', choices =>[qw(AAA BB CCC 0)] },,
       indir => { type=>'idir', default=>'/tmp' },
       dbdir => { type=>'idir' },
-      infile => { type=>'ifile', need=>0, desc=>"File to read" },
-      outdir => { type=>'dir', },
-      outfile => { type=>'file', desc=>"File to write to"},
-      myint => { type=>'int', default=>42, need=>1 },
-      myfloat => { type=>'float', default=>'3.14' },
+      infile => { type=>'ifile', need=>0, desc=>"File to read", group=>'I/O' },
+      outdir => { type=>'dir', group=>'I/O'},
+      outfile => { type=>'file', desc=>"File to write to", group=>'I/O'},
+      myint => { type=>'int', default=>42, need=>1, group=>'NUMBERS' },
+      myfloat => { type=>'float', default=>'3.14', group=>'NUMBERS' },
       mybool => { type=>'bool', default=>0 },
       myinc => { type=>'counter', default=>0 },
-      mystring => { type=>'string', default=>'piece of string' },
+      mystring => { type=>'string', default=>'piece of string', group=>'STRINGY' },
       mychar => { type=>'char', default=>'N', desc=>"Single character" },
       check => { type=>'bool', default=>0, desc=>"Check dependencies and exit" },
     },
