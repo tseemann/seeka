@@ -27,18 +27,34 @@ sub main {
     cache  => { type=>'dir', need=>1, desc=>"Cache directory for indices",
                 default=>($ENV{SEEKA_CACHE} || $ENV{HOME}."/.seeka") },
     # BOTH
-    kingdom  => { type=>'string', desc=>"Kingdom: bacteria archaea fungi protozoa" },
-    organism => { type=>'string', desc=>"Pattern to filter 'Genus species strain' on" },
+    kingdom  => { type=>'choice', desc=>"Kingdom", group=>'TAXONOMY',
+      choices=>[qw(bacteria archaea fungi protozoa)] },
+    organism => { type=>'string', group=>'TAXONOMY',
+      desc=>"Pattern to filter 'Genus species strain' on" },
+
     # FASTA
-    division => { type=>'string', desc=>"Division: genbank refseq" },
-    quality  => { type=>'string', desc=>"Assembly status: closed draft" },
-    format   => { type=>'string', default=>"gbff", desc=>"File format: gbff gff fna ffn" },
+    division => { type=>'choice', default=>'refseq', group=>'ASSEMBLIES',
+      desc=>"Division", choices=>[qw(genbank refseq)] },
+    quality  => { type=>'choice', default=>'closed', group=>'ASSEMBLIES',
+      desc=>"Assembly quality", choices=>[qw(closed draft)] },
+    format   => { type=>'choice', default=>'gbff', group=>'ASSEMBLIES',
+      desc=>"File format", choices=>[qw(gbff gff fna ffn)] },
+      
     # FASTQ
-    platform => { type=>'string', default=>'ILLUMINA', desc=>"Sequencing platform: ILLUMINA PACBIO 454 TORRENT" },
-    library  => { type=>'string', default=>'WGS', desc=>"Library: WGS AMPLICON ..." },
-    source   => { type=>'string', default=>'GENOMIC', desc=>"Library: GENOMIC RNA ..." },
-    layout   => { type=>'string', default=>'PAIRED', desc=>"Read strategy: PAIRED SINGLE" },
-  });
+    platform => { type=>'string', default=>'ILLUMINA', group=>'READS',
+      desc=>"Sequencing platform: ILLUMINA PACBIO 454 TORRENT" },
+    library  => { type=>'string', default=>'WGS', group=>'READS',
+      desc=>"Library: WGS AMPLICON ..." },
+    source   => { type=>'string', default=>'GENOMIC', group=>'READS',
+      desc=>"Library: GENOMIC RNA ..." },
+    layout   => { type=>'string', default=>'PAIRED', group=>'READS',
+      desc=>"Read strategy: PAIRED SINGLE" },
+  },
+  { 
+    argv => 'ACCESSION ...',
+    argc_min => 1, 
+  }
+  );
 
   # print Dumper($opt);
   require_exe($_) for qw(ascp rsync curl esearch efetch elink);

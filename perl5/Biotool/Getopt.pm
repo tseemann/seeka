@@ -55,7 +55,7 @@ sub show_version {
   exit(0);
 }
 
-sub validaxte {
+sub validate {
   my($self, $p, $switch, $value) = @_;
   my $valid = {
     'int'     => sub { @_[0] =~ m/^[-+]?\d+$/; },
@@ -122,7 +122,7 @@ sub getopt {
     validate($self, $p, $switch, $opt->{$switch})
       if defined $opt->{$switch};
     #$p->{$switch}{group} //= 'OPTIONS';
-    msg("$switch group = ", $p->{$switch}{group});
+    msg("$switch group = ", $p->{$switch}{group}) if $DEBUG;
   }
 
   # check we have the correct amount of positional parameters
