@@ -139,7 +139,7 @@ Please submit suggestions and bug reports to the
 ## References
 
 * [Genbank accessions](https://www.ncbi.nlm.nih.gov/Sequin/acc.html)
-* [Refseq accessions](https://www.ncbi.nlm.nih.gov/books/NBK21091/table/ch18.T.refseq_accession_numbers_and_mole/?report=objectonly))
+* [Refseq accessions](https://www.ncbi.nlm.nih.gov/books/NBK21091/table/ch18.T.refseq_accession_numbers_and_mole/?report=objectonly)
 * [SRA accessions](https://www.ncbi.nlm.nih.gov/books/NBK56913/)
 
 ## Author
